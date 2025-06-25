@@ -1,8 +1,10 @@
 import re
 from pinecone import Pinecone, ServerlessSpec
 from sentence_transformers import SentenceTransformer
+import os
 
-pc = Pinecone(api_key="pcsk_4zT1Re_8359xzexpKV4FK3NYzYVv6U6LqNocikdsQeQAmeFQQ8BPYiJVUv8uRa1d81tkfA")  # Replace with your key
+PINECONE_API_KEY = os.environ.get('PINECONE_API_KEY')
+pc = Pinecone(api_key=PINECONE_API_KEY)
 
 # Connect to the index
 index_name = "medical"  # Replace with your index

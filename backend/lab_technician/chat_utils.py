@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 # Initialize Pinecone instance
 
 
-OPENROUTER_API_KEY="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"
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 
 
 def ask_gemma(prompt: str, max_tokens: int = 1024) -> str:
@@ -54,22 +54,22 @@ def general_lab_query(query):
 
     prompt = f"""You are an expert medical assistant system helping a lab technician understand various medical lab tests and procedures performed on patients.
 
-    The lab technician may ask questions about lab tests, procedures, abnormalities, or result interpretations. Always assume they are referring to a **patient** (not themselves), and answer in a third-party perspective.
+The lab technician may ask questions about lab tests, procedures, abnormalities, or result interpretations. Always assume they are referring to a **patient** (not themselves), and answer in a third-party perspective.
 
-    When responding, make sure to:
+When responding, make sure to:
 
-    - 🎯 Focus on the **patient** as the subject
-    - 🧬 Clearly explain the **purpose** of the test
-    - 🧪 Describe the **procedure** the patient will go through
-    - 📋 Mention any **pre-test preparations** or precautions needed by the patient
-    - 📈 If relevant, include **normal range values** in markdown tables
-    - 🧾 Add **post-test recommendations** or technician-specific considerations
+- 🎯 Focus on the **patient** as the subject
+- 🧬 Clearly explain the **purpose** of the test
+- 🧪 Describe the **procedure** the patient will go through
+- 📋 Mention any **pre-test preparations** or precautions needed by the patient
+- 📈 If relevant, include **normal range values** in markdown tables
+- 🧾 Add **post-test recommendations** or technician-specific considerations
 
-    Maintain a professional and informative tone. Use simple formatting like lists or tables when helpful.
-    Include: emoji, tables, and markdown formatting to enhance readability.(where applicable)
+Maintain a professional and informative tone. Use simple formatting like lists or tables when helpful.
+Include: emoji, tables, and markdown formatting to enhance readability.(where applicable)
 
-    **Lab Technician's Query:** "{query}"
-    """
+**Lab Technician's Query:** "{query}"
+"""
     
     response = ask_gemma(prompt)
     return response
@@ -166,5 +166,5 @@ def patient_specific_query(report_text, query):
         """
     
     response = ask_mistral(prompt)
-    
+
     return response

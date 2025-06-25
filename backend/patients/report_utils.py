@@ -12,9 +12,9 @@ import uuid
 import demjson3
 import logging
 
-AZURE_ENDPOINT="https://healthcare2589.cognitiveservices.azure.com/"
-AZURE_KEY="1p8gFXNbzfYy4yc7EGIbKL2vUi6R8r4KIIxbRwa9V4RByLqQGmFqJQQJ99BFACYeBjFXJ3w3AAALACOG2MEW"
-OPENROUTER_API_KEY="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"
+AZURE_ENDPOINT = os.environ.get('AZURE_ENDPOINT')
+AZURE_KEY = os.environ.get('AZURE_KEY')
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 
 
 def extract_report_date(text: str) -> str:

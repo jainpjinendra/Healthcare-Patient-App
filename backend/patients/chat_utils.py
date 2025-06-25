@@ -3,9 +3,10 @@ import requests
 from openai import OpenAI
 import os
 
-OPENROUTER_API_KEY="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"
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+PINECONE_API_KEY = os.environ.get('PINECONE_API_KEY')
 
-pc = Pinecone(api_key="pcsk_4zT1Re_8359xzexpKV4FK3NYzYVv6U6LqNocikdsQeQAmeFQQ8BPYiJVUv8uRa1d81tkfA")  # Replace with your key
+pc = Pinecone(api_key=PINECONE_API_KEY)
 index_name = "medical"  # Replace with your index
 index = pc.Index(index_name)
 
@@ -62,7 +63,7 @@ def patient_specific_query(report_text, query):
 
     Rules:
 
-    Strictly answer only what’s asked—no unsolicited advice or over-explaining.
+    Strictly answer only what's asked—no unsolicited advice or over-explaining.
 
     Tone: Warm but concise (use emojis sparingly for empathy 🩺💙).
 
@@ -74,7 +75,7 @@ def patient_specific_query(report_text, query):
 
     Headers (---) to separate topics.
 
-    Data Privacy: Never disclose hypothetical/other patients’ info.
+    Data Privacy: Never disclose hypothetical/other patients' info.
 
     Patient Data Context : {report_text}
     Current User Query: {query}

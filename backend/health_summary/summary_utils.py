@@ -3,7 +3,7 @@ import requests
 from openai import OpenAI
 import os
 
-OPENROUTER_API_KEY="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"
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 
 
 def ask_mistral(prompt: str, max_tokens: int = 1024) -> str:
