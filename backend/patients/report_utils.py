@@ -12,10 +12,24 @@ import uuid
 import demjson3
 import logging
 
+# Global variable for the model, to be loaded lazily
+model = None
+MODEL_NAME = 'all-MiniLM-L6-v2'
+
 AZURE_ENDPOINT = os.environ.get('AZURE_ENDPOINT')
 AZURE_KEY = os.environ.get('AZURE_KEY')
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 
+def get_sentence_transformer_model():
+    """
+    Loads the SentenceTransformer model if it hasn't been loaded yet.
+    """
+    global model
+    if model is None:
+        logging.info("Loading SentenceTransformer model...")
+        model = SentenceTransformer(MODEL_NAME)
+        logging.info("SentenceTransformer model loaded.")
+    return model
 
 def extract_report_date(text: str) -> str:
     """
@@ -299,33 +313,40 @@ def enhance_medical_data(report_data, full_text):
 
 def process_pdf_report(report_file_path):
     """
-    Process a PDF report file and extract structured data using Azure Form Recognizer
-    and Mistral model for enhanced analysis.
+    Process PDF report, extract text, enhance it, and upsert to Pinecone.
     """
-
-    # Extract text from PDF for full context
-    text = ""
-    with fitz.open(report_file_path) as doc:
-        for page in doc:
-            text += page.get_text()
-    
-
-    # Get initial analysis from Azure Form Recognizer
+    # 1. Extract text and analyze with Azure Form Recognizer
     report_data = analyze_medical_report(report_file_path)
     
-    # Enhance the analysis using Mistral model
-    enhanced_data = enhance_medical_data(report_data, text)
+    # 2. Extract full text with PyMuPDF for context
+    full_text = ""
+    with fitz.open(report_file_path) as doc:
+        for page in doc:
+            full_text += page.get_text()
+    
+    # 3. Enhance data with OpenRouter
+    enhanced_data = enhance_medical_data(report_data, full_text)
 
+    # 4. Generate embeddings and upsert to Pinecone
+    # Use the lazy-loaded model
+    model = get_sentence_transformer_model()
+    
+    chunks = [str(v) for k, v in enhanced_data.items() if v]
+    embeddings = model.encode(chunks)
+    
+    patient_id = enhanced_data.get('patient_id', str(uuid.uuid4()))
     report_id = str(uuid.uuid4())
     
-    # Get patient name and handle None case
-    patient_name = report_data.get("patient_name")
-    if not patient_name:
-        patient_name = "unknown_patient"
-        print(f"Warning: Could not extract patient name from report, using default: {patient_name}")
+    metadata_list = [{
+        "patient_id": patient_id,
+        "report_id": report_id,
+        "document_part": k,
+        "text_chunk": chunk
+    } for k, chunk in zip(enhanced_data.keys(), chunks)]
     
-    print(f"Processing report for patient: {patient_name}, Report ID: {report_id}")
-
-    upsert_chunks(patient_name, report_id, text)
-        
+    upsert_chunks(
+        f"{patient_id}_{report_id}", 
+        list(zip(embeddings, metadata_list))
+    )
+    
     return enhanced_data
