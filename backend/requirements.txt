@@ -13,7 +13,7 @@ demjson3>=2.2.4
 # HTTP and APIs
 requests>=2.25.0
 openai>=1.0.0
-pinecone-client>=2.2.0
+pinecone>=2.2.0
 azure-ai-formrecognizer>=3.3.0
 azure-core==1.30.0
 
