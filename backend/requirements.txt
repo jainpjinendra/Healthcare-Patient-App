@@ -1,18 +1,21 @@
 Django>=4.2.0
+djangorestframework>=3.14.0
+django-cors-headers>=4.3.0
+gunicorn>=20.1.0
 
-# API and CORS
-Django>=4.2.0
- djangorestframework>=3.14.0
- django-cors-headers>=4.3.0
-
-# Data and PDF processing
+# Data, PDF, and AI processing
 numpy>=1.21.0
 pandas>=1.3.0
 PyMuPDF>=1.18.0
+sentence-transformers>=2.2.0
+demjson3>=2.2.4
 
 # HTTP and APIs
 requests>=2.25.0
 openai>=1.0.0
 pinecone-client>=2.2.0
+azure-ai-formrecognizer>=3.3.0
+azure-core==1.30.0
 
+# Environment variables
 python-dotenv>=0.21.0
