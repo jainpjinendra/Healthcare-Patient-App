@@ -1,2 +1,37 @@
-env/
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+media/
+staticfiles/
+
+# Virtualenv
+venv/
+ENV/
 .env
+.env.*
+
+# VSCode
+.vscode/
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# PyCharm
+.idea/
+
+# Migrations (optional, keep if you want to version them)
+# */migrations/ 
